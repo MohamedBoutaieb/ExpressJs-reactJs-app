@@ -1,13 +1,23 @@
-import { useState } from "react";
-import "./App.css";
+import { Suspense } from "react";
+import "./App.scss";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import Home from "./components/home";
+import { useAppDispatch, useAppSelector } from "./config/store";
+import { getPosts } from "./reducers/test.reducer";
 
 function App() {
-  const [count, setCount] = useState(0);
-
+  const dispatch = useAppDispatch();
+  const title = useAppSelector((state) => state.testReducer.testMessage);
+  dispatch(getPosts());
   return (
-    <>
-      <h1 className="text-4xl font-bold underline">Hello world!</h1>
-    </>
+    <BrowserRouter>
+        {title}
+      <Suspense fallback={<div>Loading...</div>}>
+        <Routes>
+          <Route path="/users" element={<Home />} />
+        </Routes>
+      </Suspense>
+    </BrowserRouter>
   );
 }
 
