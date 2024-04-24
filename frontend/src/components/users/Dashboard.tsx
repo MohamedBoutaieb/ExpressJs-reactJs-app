@@ -22,18 +22,22 @@ const Dashboard: React.FC<DashboardProps> = () => {
       title: "Name",
       dataIndex: "1",
       key: "name",
+      width: 150,
     },
     // email
     {
       title: "Email",
       dataIndex: "2",
       key: "email",
+      width: 250,
     },
     // role
     {
       title: <div className="w-full text-right">Actions</div>,
       dataIndex: "3",
       key: "role",
+      width: 300,
+      fixed: "right",
     },
   ];
   const [page, setPage] = useState(1);
@@ -53,7 +57,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
     dispatch(getUsers(page));
   }, []);
   return (
-    <div className="w-full h-full flex-col flex gap-14 px-60 py-20">
+    <div className="w-full h-full flex-col flex gap-14 min-w-[400px] py-20">
       <div className="header flex w-full items-center justify-between">
         <h1 className="text-3xl font-bold">Users</h1>{" "}
         <button
@@ -76,11 +80,11 @@ const Dashboard: React.FC<DashboardProps> = () => {
             dispatch(getUsers(page));
             setPage(page);
           },
-
           pageSize: 3,
           total: totalItems,
           current: page,
         }}
+        scroll={{ x: 500 }}
         dataSource={users.map((user) => {
           return {
             key: user.id,
@@ -108,9 +112,8 @@ const Dashboard: React.FC<DashboardProps> = () => {
             ),
           };
         })}
-      ></Table>
+      />
       <NewUserModal
-       
         isModalOpen={showCreateModal}
         handleCancel={() => setShowCreateModal(false)}
         user={user}

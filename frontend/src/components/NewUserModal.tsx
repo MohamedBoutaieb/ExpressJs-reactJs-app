@@ -40,7 +40,7 @@ const NewUserModal: React.FC<ModalProps> = (props) => {
   const onActionsChange = (checkedValues) => {
     setActions(checkedValues);
   };
-
+  const formItemStyle="w-full flex items-center border-gray-300 border-[1px] rounded-sm";
   useEffect(() => {
     form.resetFields();
     if (props.user) {
@@ -69,7 +69,7 @@ const NewUserModal: React.FC<ModalProps> = (props) => {
           name="firstname"
           rules={[{ required: true, message: "Please input your firstname!" }]}
         >
-          <div className="w-full flex items-center border-gray-300 border-[1px] ">
+          <div className={formItemStyle}>
             <div
               className="bg-[#EDF2F7] py-1 border-r-gray-300 border-[1px]  leading-6 text-xs text-center w-[72px]"
               style={{ height: "100%" }}
@@ -87,7 +87,7 @@ const NewUserModal: React.FC<ModalProps> = (props) => {
           name="lastname"
           rules={[{ required: true, message: "Please input your lastname!" }]}
         >
-          <div className="w-full flex items-center border-gray-300 border-[1px] ">
+          <div className={formItemStyle}>
             <div
               className="bg-[#EDF2F7] py-1 border-r-gray-300 border-[1px]  leading-6 text-xs text-center  w-[72px]"
               style={{ height: "100%" }}
@@ -111,9 +111,9 @@ const NewUserModal: React.FC<ModalProps> = (props) => {
             },
           ]}
         >
-          <div className="w-full flex items-center border-gray-300 border-[1px] ">
+          <div className={formItemStyle}>
             <div
-              className="bg-[#EDF2F7] py-1 border-r-gray-300 font-normal border-[1px]  leading-6 text-xs  text-center w-[72px]"
+              className="bg-[#EDF2F7] py-1 border-r-gray-300 font-normal border-[1px]  leading-6 text-xs  text-center w-[72px] rounded-sm"
               style={{ height: "100%" }}
             >
               E-mail
