@@ -27,6 +27,7 @@ let users = [
   },
 ];
 
+// get all users
 router.get("/", (req, res, next) => {
   res.json(responseHandler(users, 200, "Users retrieved successfully"));
   next();
@@ -71,5 +72,55 @@ router.post(
     next();
   }
 );
+
+//update user
+router.put(
+  "/:id",
+  [
+    [
+      body("firstname").notEmpty().withMessage("Firstname is required"),
+      body("lastname").notEmpty().withMessage("Lastname is required"),
+      body("email")
+        .notEmpty()
+        .withMessage("Email is required")
+        .isEmail()
+        .withMessage("Invalid email"),
+      body("actions").isArray().withMessage("Actions must be an array"),
+    ],
+  ],
+  (req, res, next) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      return res.json(
+        responseHandler({ errors: errors.array() }, 400, "bad request")
+      );
+    }
+    const id = req.params.id;
+    const idx = users.findIndex((user) => user.id == id);
+    if (idx === -1) {
+      res.json(responseHandler(null, 404, "User not found"));
+    } else {
+      req.body.id = Number(id);
+      users[idx] = req.body;
+
+      res.json(responseHandler(users[idx], 200, "User updated successfully"));
+    }
+    next();
+  }
+);
+
+// delete user
+router.delete("/:id", (req, res, next) => {
+  const id = req.params.id;
+  const userIndex = users.findIndex((user) => user.id == id);
+  if (userIndex === -1) {
+    res.json(responseHandler(null, 404, "User not found"));
+  } else {
+    users.splice(userIndex, 1);
+    res.json(responseHandler(Number(id), 204, "User deleted successfully"));
+  }
+  next();
+});
 
 module.exports = router;
