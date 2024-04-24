@@ -82,9 +82,11 @@ export const UserSlice = createSlice({
       })
       .addCase(createUser.pending, (state) => {
         state.loading = true;
+       
       })
       .addCase(createUser.fulfilled, (state, action) => {
         state.loading = false;
+        toast.success(action.payload.data.message);
       })
       .addCase(createUser.rejected, (state, action) => {
         state.loading = false;
@@ -105,7 +107,7 @@ export const UserSlice = createSlice({
       })
       .addCase(runAction.fulfilled, (state, action) => {
         state.loading = false;
-        toast.success("Action run successfully");
+        toast.success("Action ran successfully");
       })
       .addCase(runAction.rejected, (state, action) => {
         state.loading = false;
