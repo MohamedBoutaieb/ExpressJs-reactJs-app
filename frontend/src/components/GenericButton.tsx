@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 interface GenericButtonProps {
   text: string;
@@ -7,17 +7,21 @@ interface GenericButtonProps {
 }
 
 const GenericButton: React.FC<GenericButtonProps> = (props) => {
-  const color =
+  const [color, setColor] = useState("#3B9D18");
+
+  useEffect(() => {
     props.mode === "danger"
-      ? "#CE3131"
+      ? setColor("#CE3131")
       : props.mode === "info"
-      ? "#3182CE"
-      : "#3B9D18";
-    console.log(color);
+      ? setColor("#3182CE")
+      : null;
+  }, []);
+
   return (
     <button
       onClick={props.onClick}
-      className={`bg-[${color}] px-3 text-white rounded-md font-semibold h-8`}
+      className={`px-3 text-white rounded-md font-semibold h-8`}
+      style={{ backgroundColor: color }}
     >
       {props.text}
     </button>

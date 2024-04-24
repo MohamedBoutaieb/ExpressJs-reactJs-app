@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../config/store";
-import { getUsers } from "../../reducers/users.reducer";
+import { deleteUser, getUsers } from "../../reducers/users.reducer";
 import { Table } from "antd";
 import GenericButton from "../GenericButton";
 
@@ -32,9 +32,12 @@ const Dashboard: React.FC<DashboardProps> = () => {
       title: <div className="w-full text-right">Actions</div>,
       dataIndex: "3",
       key: "role",
-      
     },
   ];
+
+  const handleDelete = (id: number) => {
+    dispatch(deleteUser(id)).then(() => dispatch(getUsers()));
+  };
   return (
     <div className="w-full h-full flex-col flex gap-14 px-60 py-20">
       <div className="header flex w-full items-center justify-between">
@@ -63,9 +66,16 @@ const Dashboard: React.FC<DashboardProps> = () => {
                   text="Edit"
                   onClick={() => {}}
                 />{" "}
-                
-                <GenericButton mode="danger" text="Delete" onClick={() => {}} />
-                <GenericButton mode="success" text="Run action" onClick={() => {}} />
+                <GenericButton
+                  mode="danger"
+                  text="Delete"
+                  onClick={() => handleDelete(user.id)}
+                />
+                <GenericButton
+                  mode="success"
+                  text="Run action"
+                  onClick={() => {}}
+                />
               </div>
             ),
           };

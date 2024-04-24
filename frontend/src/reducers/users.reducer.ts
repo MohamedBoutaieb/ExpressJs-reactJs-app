@@ -19,6 +19,12 @@ export const getUsers = createAsyncThunk(
   { serializeError: serializeAxiosError }
 );
 
+export const deleteUser = createAsyncThunk(
+  "USER/DELETE_USER",
+  async (id: number) => axios.delete<any>(`${API_BASE_URL}users/${id}`),
+  { serializeError: serializeAxiosError }
+);
+
 // slice
 export const UserSlice = createSlice({
   name: "USER",
@@ -38,12 +44,18 @@ export const UserSlice = createSlice({
       .addCase(getUsers.rejected, (state, action) => {
         state.loading = false;
         state.error = true;
+      }).addCase(deleteUser.pending, (state) => {
+        state.loading = true;
+      }
+      ).addCase(deleteUser.fulfilled, (state, action) => {
+        state.loading = false;
+      }).addCase(deleteUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = true;
       });
   },
 });
 
-
 export const { reset } = UserSlice.actions;
-
 
 export default UserSlice.reducer;
