@@ -63,7 +63,7 @@ const NewUserModal: React.FC<ModalProps> = (props) => {
       okText={props.user ? "Update" : "Create"}
       cancelText="Cancel"
     >
-      <Form form={form} onFinish={(values) => onFinishHandler(values)}>
+      <Form form={form} onFinish={(values) => onFinishHandler(values)} className="py-6">
         <Form.Item
           name="firstname"
           rules={[{ required: true, message: "Please input your firstname!" }]}

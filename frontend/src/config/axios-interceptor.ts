@@ -1,4 +1,5 @@
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const axiosInterceptor = () => {
   axios.interceptors.request.use(
@@ -15,6 +16,10 @@ const axiosInterceptor = () => {
       return response;
     },
     (error) => {
+      // check if error code is 401
+      if (error.response.status === 401) {
+        toast.error(error.response.data.message || "Unauthorized access");
+      }
       return Promise.reject(error);
     }
   );

@@ -4,6 +4,7 @@ import { deleteUser, getUsers } from "../../reducers/users.reducer";
 import { Table } from "antd";
 import GenericButton from "../GenericButton";
 import NewUserModal from "../NewUserModal";
+import RunActionModal from "../RunActionModal";
 
 interface DashboardProps {
   // Define your component props here
@@ -17,6 +18,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
     dispatch(getUsers());
   }, []);
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showRunActionModal, setShowRunActionModal] = useState(false);
   const columns = [
     {
       title: "Name",
@@ -43,6 +45,10 @@ const Dashboard: React.FC<DashboardProps> = () => {
   const handleUpdate = (user: any) => {
     setUser(user);
     setShowCreateModal(true);
+  };
+  const handleRunAction = (user: any) => {
+    setShowRunActionModal(true);
+    setUser(user);
   };
   return (
     <div className="w-full h-full flex-col flex gap-14 px-60 py-20">
@@ -84,7 +90,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                 <GenericButton
                   mode="success"
                   text="Run action"
-                  onClick={() => {}}
+                  onClick={() => handleRunAction(user)}
                 />
               </div>
             ),
@@ -96,6 +102,11 @@ const Dashboard: React.FC<DashboardProps> = () => {
         handleCancel={() => setShowCreateModal(false)}
         user={user}
       ></NewUserModal>
+      <RunActionModal
+        isModalOpen={showRunActionModal}
+        handleCancel={() => setShowRunActionModal(false)}
+        user={user}
+      ></RunActionModal>
     </div>
   );
 };

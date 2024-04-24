@@ -36,7 +36,7 @@ router.get("/:id", (req, res, next) => {
   const id = req.params.id;
   const user = users.find((user) => user.id == id);
   if (!user) {
-    res.json(responseHandler(null, 404, "User not found"));
+    res.status(404).json(responseHandler(null, 404, "User not found"));
   } else {
     res.json(responseHandler(user, 200, "User retrieved successfully"));
   }
@@ -64,7 +64,7 @@ router.post("/", [validator], (req, res, next) => {
   const user = req.body;
   user["id"] = users.length + 1;
   users.push(user);
-  res.json(responseHandler(user, 201, "User created successfully"));
+  res.status(201).json(responseHandler(user, 201, "User created successfully"));
   next();
 });
 
@@ -85,11 +85,10 @@ router.put(
     const id = req.params.id;
     const idx = users.findIndex((user) => user.id == id);
     if (idx === -1) {
-      res.json(responseHandler(null, 404, "User not found"));
+      res.status(404).json(responseHandler(null, 404, "User not found"));
     } else {
       req.body.id = Number(id);
       users[idx] = req.body;
-
       res.json(responseHandler(users[idx], 200, "User updated successfully"));
     }
     next();
@@ -101,7 +100,7 @@ router.delete("/:id", (req, res, next) => {
   const id = req.params.id;
   const userIndex = users.findIndex((user) => user.id == id);
   if (userIndex === -1) {
-    res.json(responseHandler(null, 404, "User not found"));
+    res.status(404).json(responseHandler(null, 404, "User not found"));
   } else {
     users.splice(userIndex, 1);
     res.json(responseHandler(Number(id), 204, "User deleted successfully"));
@@ -115,7 +114,7 @@ router.post("/:id/actions/:action", (req, res, next) => {
   const action = req.params.action;
   const user = users.find((user) => user.id == id);
   if (!user) {
-    res.json(responseHandler(null, 404, "User not found"));
+    res.status(404).json(responseHandler(null, 404, "User not found"));
   } else {
     if (user.actions.includes(action)) {
       res.json(
@@ -126,7 +125,7 @@ router.post("/:id/actions/:action", (req, res, next) => {
         )
       );
     } else {
-      res.json(
+      res.status(401).json(
         responseHandler(
           { id: id, action: action },
           401,
@@ -137,6 +136,7 @@ router.post("/:id/actions/:action", (req, res, next) => {
   }
   next();
 });
+
 
 
 module.exports = router;

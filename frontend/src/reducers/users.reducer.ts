@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { serializeAxiosError } from "./reducer.utils";
 import { API_BASE_URL } from "../config/constants";
+import { toast } from "react-toastify";
 
 export const initialState = {
   user: {},
@@ -33,7 +34,15 @@ export const deleteUser = createAsyncThunk(
 
 export const updateUser = createAsyncThunk(
   "USER/UPDATE_USER",
-  async ({data, id} : any) => axios.put<any>(`${API_BASE_URL}users/${id}`, data),
+  async ({ data, id }: any) =>
+    axios.put<any>(`${API_BASE_URL}users/${id}`, data),
+  { serializeError: serializeAxiosError }
+);
+
+export const runAction = createAsyncThunk(
+  "USER/RUN_ACTION",
+  async ({ action, id }: any) =>
+    axios.post<any>(`${API_BASE_URL}users/${id}/actions/${action}`),
   { serializeError: serializeAxiosError }
 );
 
@@ -76,13 +85,26 @@ export const UserSlice = createSlice({
       .addCase(createUser.rejected, (state, action) => {
         state.loading = false;
         state.error = true;
-      }).addCase(updateUser.pending, (state) => {
+      })
+      .addCase(updateUser.pending, (state) => {
         state.loading = true;
-      }).addCase(updateUser.fulfilled, (state, action) => {
+      })
+      .addCase(updateUser.fulfilled, (state, action) => {
         state.loading = false;
-      }).addCase(updateUser.rejected, (state, action) => {
+      })
+      .addCase(updateUser.rejected, (state, action) => {
         state.loading = false;
         state.error = true;
+      })
+      .addCase(runAction.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(runAction.fulfilled, (state, action) => {
+        state.loading = false;
+        toast.success("Action run successfully");
+      })
+      .addCase(runAction.rejected, (state, action) => {
+        state.loading = false;
       });
   },
 });

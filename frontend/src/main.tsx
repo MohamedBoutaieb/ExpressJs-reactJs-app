@@ -5,6 +5,7 @@ import "./index.scss";
 import getStore from "./config/store.ts";
 import { Provider } from "react-redux";
 import axiosInterceptor from "./config/axios-interceptor.ts";
+import 'react-toastify/dist/ReactToastify.css'
 
 const store = getStore();
 axiosInterceptor();

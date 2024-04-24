@@ -1,28 +1,24 @@
-import { Suspense, useEffect } from "react";
+import { Suspense } from "react";
 import "./App.scss";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Home from "./components/home";
-import { useAppDispatch, useAppSelector } from "./config/store";
-
-import { getUsers } from "./reducers/users.reducer";
+import { useAppDispatch } from "./config/store";
+import { ToastContainer } from "react-toastify";
 
 function App() {
   const dispatch = useAppDispatch();
-  const users = useAppSelector((state) => state.usersReducer.usersList);
-
-  useEffect(() => {
-    dispatch(getUsers());
-  }, []);
-
   return (
-    <BrowserRouter>
-      {/* {users.length > 0 ? users[0].id : null} */}
-      <Suspense fallback={<div>Loading...</div>}>
-        <Routes>
-          <Route path="/users" element={<Home />} />
-        </Routes>
-      </Suspense>
-    </BrowserRouter>
+    <>
+      <ToastContainer />
+      <BrowserRouter>
+        {/* {users.length > 0 ? users[0].id : null} */}
+        <Suspense fallback={<div>Loading...</div>}>
+          <Routes>
+            <Route path="/users" element={<Home />} />
+          </Routes>
+        </Suspense>
+      </BrowserRouter>
+    </>
   );
 }
 
