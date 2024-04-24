@@ -87,7 +87,7 @@ router.delete("/:id", (req, res, next) => {
 router.post("/:id/actions/:action", (req, res, next) => {
   const id = req.params.id;
   const action = req.params.action;
-  const user = users.find((user) => user.id == id);
+  const user = getUserById(id);
   if (!user) {
     res.status(404).json(responseHandler(null, 404, "User not found"));
   } else {
