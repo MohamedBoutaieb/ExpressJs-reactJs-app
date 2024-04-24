@@ -31,6 +31,12 @@ export const deleteUser = createAsyncThunk(
   { serializeError: serializeAxiosError }
 );
 
+export const updateUser = createAsyncThunk(
+  "USER/UPDATE_USER",
+  async ({data, id} : any) => axios.put<any>(`${API_BASE_URL}users/${id}`, data),
+  { serializeError: serializeAxiosError }
+);
+
 // slice
 export const UserSlice = createSlice({
   name: "USER",
@@ -60,11 +66,21 @@ export const UserSlice = createSlice({
       .addCase(deleteUser.rejected, (state, action) => {
         state.loading = false;
         state.error = true;
-      }).addCase(createUser.pending, (state) => {
+      })
+      .addCase(createUser.pending, (state) => {
         state.loading = true;
-      }).addCase(createUser.fulfilled, (state, action) => {
+      })
+      .addCase(createUser.fulfilled, (state, action) => {
         state.loading = false;
-      }).addCase(createUser.rejected, (state, action) => {
+      })
+      .addCase(createUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = true;
+      }).addCase(updateUser.pending, (state) => {
+        state.loading = true;
+      }).addCase(updateUser.fulfilled, (state, action) => {
+        state.loading = false;
+      }).addCase(updateUser.rejected, (state, action) => {
         state.loading = false;
         state.error = true;
       });

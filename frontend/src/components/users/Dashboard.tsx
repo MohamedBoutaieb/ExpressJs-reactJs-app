@@ -36,9 +36,13 @@ const Dashboard: React.FC<DashboardProps> = () => {
       key: "role",
     },
   ];
-
+  const [user, setUser] = useState(null);
   const handleDelete = (id: number) => {
     dispatch(deleteUser(id)).then(() => dispatch(getUsers()));
+  };
+  const handleUpdate = (user: any) => {
+    setUser(user);
+    setShowCreateModal(true);
   };
   return (
     <div className="w-full h-full flex-col flex gap-14 px-60 py-20">
@@ -47,7 +51,10 @@ const Dashboard: React.FC<DashboardProps> = () => {
         <button
           className="text-white bg-[#319795]
           px-6 rounded-md text-lg font-semibold h-7"
-          onClick={() => setShowCreateModal(true)}
+          onClick={() => {
+            setUser(null);
+            setShowCreateModal(true);
+          }}
         >
           Create
         </button>
@@ -67,7 +74,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
                 <GenericButton
                   mode="info"
                   text="Edit"
-                  onClick={() => {}}
+                  onClick={() => handleUpdate(user)}
                 />{" "}
                 <GenericButton
                   mode="danger"
@@ -87,7 +94,8 @@ const Dashboard: React.FC<DashboardProps> = () => {
       <NewUserModal
         isModalOpen={showCreateModal}
         handleCancel={() => setShowCreateModal(false)}
-       ></NewUserModal>
+        user={user}
+      ></NewUserModal>
     </div>
   );
 };
