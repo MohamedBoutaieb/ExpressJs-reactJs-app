@@ -4,6 +4,7 @@ import { serializeAxiosError } from "./reducer.utils";
 
 export const initialState = {
   testMessage: null as string | null,
+  loading: false
 };
 
 export type TestState = Readonly<typeof initialState>;

@@ -1,4 +1,5 @@
 import React from 'react';
+import Dashboard from './users/Dashboard';
 
 interface HomeProps {
     
@@ -6,8 +7,8 @@ interface HomeProps {
 
 const Home: React.FC<HomeProps> = () => {
     return (
-        <div>
-            <h1>Welcome to the Home component!</h1>
+        <div className='w-screen h-screen flex'>
+            <Dashboard />
         </div>
     );
 };

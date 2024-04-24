@@ -1,17 +1,22 @@
-import { Suspense } from "react";
+import { Suspense, useEffect } from "react";
 import "./App.scss";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Home from "./components/home";
 import { useAppDispatch, useAppSelector } from "./config/store";
-import { getPosts } from "./reducers/test.reducer";
+
+import { getUsers } from "./reducers/users.reducer";
 
 function App() {
   const dispatch = useAppDispatch();
-  const title = useAppSelector((state) => state.testReducer.testMessage);
-  dispatch(getPosts());
+  const users = useAppSelector((state) => state.usersReducer.usersList);
+
+  useEffect(() => {
+    dispatch(getUsers());
+  }, []);
+
   return (
     <BrowserRouter>
-        {title}
+      {/* {users.length > 0 ? users[0].id : null} */}
       <Suspense fallback={<div>Loading...</div>}>
         <Routes>
           <Route path="/users" element={<Home />} />
