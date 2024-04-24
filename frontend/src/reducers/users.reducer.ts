@@ -9,6 +9,8 @@ export const initialState = {
   usersList: [],
   loading: false,
   error: false,
+  totalPage: 0,
+  totalItems: 0,
 };
 
 export type UserState = Readonly<typeof initialState>;
@@ -16,7 +18,7 @@ export type UserState = Readonly<typeof initialState>;
 // async thunk
 export const getUsers = createAsyncThunk(
   "USER/GET_ALL_USERS",
-  async () => axios.get<any>(`${API_BASE_URL}users`),
+  async (page:any) => axios.get<any>(`${API_BASE_URL}users?page=${page}`),
   { serializeError: serializeAxiosError }
 );
 
@@ -60,7 +62,9 @@ export const UserSlice = createSlice({
       })
       .addCase(getUsers.fulfilled, (state, action) => {
         state.loading = false;
-        state.usersList = action.payload.data.data;
+        state.usersList = action.payload.data.data.users;
+        state.totalPage = action.payload.data.data.totalPages;
+        state.totalItems = action.payload.data.data.total;
       })
       .addCase(getUsers.rejected, (state, action) => {
         state.loading = false;

@@ -14,9 +14,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
   // Add your component logic here
   const dispatch = useAppDispatch();
   const users = useAppSelector((state) => state.usersReducer.usersList);
-  useEffect(() => {
-    dispatch(getUsers());
-  }, []);
+  const { pages, totalItems } = useAppSelector((state) => state.usersReducer);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showRunActionModal, setShowRunActionModal] = useState(false);
   const columns = [
@@ -38,9 +36,10 @@ const Dashboard: React.FC<DashboardProps> = () => {
       key: "role",
     },
   ];
+  const [page, setPage] = useState(1);
   const [user, setUser] = useState(null);
   const handleDelete = (id: number) => {
-    dispatch(deleteUser(id)).then(() => dispatch(getUsers()));
+    dispatch(deleteUser(id)).then(() => dispatch(getUsers(page)));
   };
   const handleUpdate = (user: any) => {
     setUser(user);
@@ -50,6 +49,9 @@ const Dashboard: React.FC<DashboardProps> = () => {
     setShowRunActionModal(true);
     setUser(user);
   };
+  useEffect(() => {
+    dispatch(getUsers(page));
+  }, []);
   return (
     <div className="w-full h-full flex-col flex gap-14 px-60 py-20">
       <div className="header flex w-full items-center justify-between">
@@ -69,6 +71,16 @@ const Dashboard: React.FC<DashboardProps> = () => {
       <Table
         columns={columns}
         bordered={true}
+        pagination={{
+          onChange(page) {
+            dispatch(getUsers(page));
+            setPage(page);
+          },
+
+          pageSize: 3,
+          total: totalItems,
+          current: page,
+        }}
         dataSource={users.map((user) => {
           return {
             key: user.id,
@@ -98,9 +110,11 @@ const Dashboard: React.FC<DashboardProps> = () => {
         })}
       ></Table>
       <NewUserModal
+       
         isModalOpen={showCreateModal}
         handleCancel={() => setShowCreateModal(false)}
         user={user}
+        page={page}
       ></NewUserModal>
       <RunActionModal
         isModalOpen={showRunActionModal}

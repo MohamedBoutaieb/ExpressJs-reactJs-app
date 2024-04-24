@@ -25,11 +25,47 @@ let users = [
     email: "bob.johnson@example.com",
     actions: ["create-item", "delete-item"],
   },
+  // give me 3 other users
+  {
+    id: 4,
+    firstname: "Alice",
+    lastname: "Johnson",
+    email: "alice.johnson@example.com",
+    actions: ["create-item", "delete-item", "edit-item", "view-item"],
+  },
+  {
+    id: 5,
+    firstname: "Michael",
+    lastname: "Brown",
+    email: "michael.brown@example.com",
+    actions: ["edit-item", "view-item"],
+  },
+  {
+    id: 6,
+    firstname: "Emily",
+    lastname: "Davis",
+    email: "emily.davis@example.com",
+    actions: ["create-item", "delete-item"],
+  },
 ];
 
 // get all users
 router.get("/", (req, res, next) => {
-  res.json(responseHandler(users, 200, "Users retrieved successfully"));
+  const page = req.query.page || 1;
+  // get 5 users per page
+  const perPage = 3;
+  const start = (page - 1) * perPage;
+  const end = start + perPage;
+  const data = users.slice(start, end);
+  const total = users.length;
+  const totalPages = Math.ceil(total / perPage);
+  res.json(
+    responseHandler(
+      { users: data, total: total, totalPages: totalPages, page: Number(page) },
+      200, 
+      "Users retrieved successfully"
+    )
+  );
   next();
 });
 router.get("/:id", (req, res, next) => {
@@ -69,31 +105,25 @@ router.post("/", [validator], (req, res, next) => {
 });
 
 //update user
-router.put(
-  "/:id",
-  [
-    [validator], 
-  ],
-  (req, res, next) => {
-    const errors = validationResult(req);
+router.put("/:id", [[validator]], (req, res, next) => {
+  const errors = validationResult(req);
 
-    if (!errors.isEmpty()) {
-      return res.json(
-        responseHandler({ errors: errors.array() }, 400, "bad request")
-      );
-    }
-    const id = req.params.id;
-    const idx = users.findIndex((user) => user.id == id);
-    if (idx === -1) {
-      res.status(404).json(responseHandler(null, 404, "User not found"));
-    } else {
-      req.body.id = Number(id);
-      users[idx] = req.body;
-      res.json(responseHandler(users[idx], 200, "User updated successfully"));
-    }
-    next();
+  if (!errors.isEmpty()) {
+    return res.json(
+      responseHandler({ errors: errors.array() }, 400, "bad request")
+    );
   }
-);
+  const id = req.params.id;
+  const idx = users.findIndex((user) => user.id == id);
+  if (idx === -1) {
+    res.status(404).json(responseHandler(null, 404, "User not found"));
+  } else {
+    req.body.id = Number(id);
+    users[idx] = req.body;
+    res.json(responseHandler(users[idx], 200, "User updated successfully"));
+  }
+  next();
+});
 
 // delete user
 router.delete("/:id", (req, res, next) => {
@@ -108,7 +138,7 @@ router.delete("/:id", (req, res, next) => {
   next();
 });
 
-// run a specific action 
+// run a specific action
 router.post("/:id/actions/:action", (req, res, next) => {
   const id = req.params.id;
   const action = req.params.action;
@@ -125,18 +155,21 @@ router.post("/:id/actions/:action", (req, res, next) => {
         )
       );
     } else {
-      res.status(401).json(
-        responseHandler(
-          { id: id, action: action },
-          401,
-          "User does not have permission to perform this action"
-        )
-      );
+      res
+        .status(401)
+        .json(
+          responseHandler(
+            { id: id, action: action },
+            401,
+            user.firstname +
+              " " +
+              user.lastname +
+              " does not have permission to perform this action"
+          )
+        );
     }
   }
   next();
 });
-
-
 
 module.exports = router;

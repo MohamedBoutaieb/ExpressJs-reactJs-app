@@ -7,6 +7,7 @@ interface ModalProps {
   isModalOpen: boolean;
   handleCancel: () => void;
   user?: Object;
+  page: number;
 }
 
 const NewUserModal: React.FC<ModalProps> = (props) => {
@@ -19,13 +20,13 @@ const NewUserModal: React.FC<ModalProps> = (props) => {
       dispatch(updateUser({ data: values, id: props.user["id"] })).then(() => {
         props.handleCancel();
         form.resetFields();
-        dispatch(getUsers());
+        dispatch(getUsers(props.page));
       });
     } else {
       dispatch(createUser(values)).then(() => {
         props.handleCancel();
         form.resetFields();
-        dispatch(getUsers());
+        dispatch(getUsers(props.page));
       });
     }
   };
