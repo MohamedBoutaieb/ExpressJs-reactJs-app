@@ -1,7 +1,7 @@
 let express = require("express");
 const responseHandler = require("./responseHandler");
+const { body, validationResult } = require("express-validator");
 let router = express.Router();
-
 
 let users = [
   {
@@ -41,5 +41,35 @@ router.get("/:id", (req, res, next) => {
   }
   next();
 });
+
+router.post(
+  "/",
+  [
+    [
+      body("firstname").notEmpty().withMessage("Firstname is required"),
+      body("lastname").notEmpty().withMessage("Lastname is required"),
+      body("email")
+        .notEmpty()
+        .withMessage("Email is required")
+        .isEmail()
+        .withMessage("Invalid email"),
+      body("actions").isArray().withMessage("Actions must be an array"),
+    ],
+  ],
+  (req, res, next) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      return res.json(
+        responseHandler({ errors: errors.array() }, 400, "bad request")
+      );
+    }
+    const user = req.body;
+    user["id"] = users.length + 1;
+    users.push(user);
+    res.json(responseHandler(user, 201, "User created successfully"));
+    next();
+  }
+);
 
 module.exports = router;
