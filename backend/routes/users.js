@@ -52,7 +52,7 @@ let users = [
 // get all users
 router.get("/", (req, res, next) => {
   const page = req.query.page || 1;
-  // get 5 users per page
+  // get 3 users per page
   const perPage = 3;
   const start = (page - 1) * perPage;
   const end = start + perPage;
@@ -64,7 +64,7 @@ router.get("/", (req, res, next) => {
       { users: data, total: total, totalPages: totalPages, page: Number(page) },
       200, 
       "Users retrieved successfully"
-    )
+    ) 
   );
   next();
 });
