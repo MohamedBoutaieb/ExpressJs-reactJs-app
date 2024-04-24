@@ -43,50 +43,36 @@ router.get("/:id", (req, res, next) => {
   next();
 });
 
-router.post(
-  "/",
-  [
-    [
-      body("firstname").notEmpty().withMessage("Firstname is required"),
-      body("lastname").notEmpty().withMessage("Lastname is required"),
-      body("email")
-        .notEmpty()
-        .withMessage("Email is required")
-        .isEmail()
-        .withMessage("Invalid email"),
-      body("actions").isArray().withMessage("Actions must be an array"),
-    ],
-  ],
-  (req, res, next) => {
-    const errors = validationResult(req);
+const validator = [
+  body("firstname").notEmpty().withMessage("Firstname is required"),
+  body("lastname").notEmpty().withMessage("Lastname is required"),
+  body("email")
+    .notEmpty()
+    .withMessage("Email is required")
+    .isEmail()
+    .withMessage("Invalid email"),
+  body("actions").isArray().withMessage("Actions must be an array"),
+];
+router.post("/", [validator], (req, res, next) => {
+  const errors = validationResult(req);
 
-    if (!errors.isEmpty()) {
-      return res.json(
-        responseHandler({ errors: errors.array() }, 400, "bad request")
-      );
-    }
-    const user = req.body;
-    user["id"] = users.length + 1;
-    users.push(user);
-    res.json(responseHandler(user, 201, "User created successfully"));
-    next();
+  if (!errors.isEmpty()) {
+    return res.json(
+      responseHandler({ errors: errors.array() }, 400, "bad request")
+    );
   }
-);
+  const user = req.body;
+  user["id"] = users.length + 1;
+  users.push(user);
+  res.json(responseHandler(user, 201, "User created successfully"));
+  next();
+});
 
 //update user
 router.put(
   "/:id",
   [
-    [
-      body("firstname").notEmpty().withMessage("Firstname is required"),
-      body("lastname").notEmpty().withMessage("Lastname is required"),
-      body("email")
-        .notEmpty()
-        .withMessage("Email is required")
-        .isEmail()
-        .withMessage("Invalid email"),
-      body("actions").isArray().withMessage("Actions must be an array"),
-    ],
+    [validator], 
   ],
   (req, res, next) => {
     const errors = validationResult(req);
@@ -122,5 +108,35 @@ router.delete("/:id", (req, res, next) => {
   }
   next();
 });
+
+// run a specific action 
+router.post("/:id/actions/:action", (req, res, next) => {
+  const id = req.params.id;
+  const action = req.params.action;
+  const user = users.find((user) => user.id == id);
+  if (!user) {
+    res.json(responseHandler(null, 404, "User not found"));
+  } else {
+    if (user.actions.includes(action)) {
+      res.json(
+        responseHandler(
+          { id: id, action: action },
+          200,
+          "Action performed successfully"
+        )
+      );
+    } else {
+      res.json(
+        responseHandler(
+          { id: id, action: action },
+          401,
+          "User does not have permission to perform this action"
+        )
+      );
+    }
+  }
+  next();
+});
+
 
 module.exports = router;
