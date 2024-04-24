@@ -19,6 +19,12 @@ export const getUsers = createAsyncThunk(
   { serializeError: serializeAxiosError }
 );
 
+export const createUser = createAsyncThunk(
+  "USER/CREATE_USER",
+  async (data: any) => axios.post<any>(`${API_BASE_URL}users`, data),
+  { serializeError: serializeAxiosError }
+);
+
 export const deleteUser = createAsyncThunk(
   "USER/DELETE_USER",
   async (id: number) => axios.delete<any>(`${API_BASE_URL}users/${id}`),
@@ -44,12 +50,21 @@ export const UserSlice = createSlice({
       .addCase(getUsers.rejected, (state, action) => {
         state.loading = false;
         state.error = true;
-      }).addCase(deleteUser.pending, (state) => {
+      })
+      .addCase(deleteUser.pending, (state) => {
         state.loading = true;
-      }
-      ).addCase(deleteUser.fulfilled, (state, action) => {
+      })
+      .addCase(deleteUser.fulfilled, (state, action) => {
         state.loading = false;
-      }).addCase(deleteUser.rejected, (state, action) => {
+      })
+      .addCase(deleteUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = true;
+      }).addCase(createUser.pending, (state) => {
+        state.loading = true;
+      }).addCase(createUser.fulfilled, (state, action) => {
+        state.loading = false;
+      }).addCase(createUser.rejected, (state, action) => {
         state.loading = false;
         state.error = true;
       });

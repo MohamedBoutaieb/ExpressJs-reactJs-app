@@ -1,8 +1,9 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../config/store";
 import { deleteUser, getUsers } from "../../reducers/users.reducer";
 import { Table } from "antd";
 import GenericButton from "../GenericButton";
+import NewUserModal from "../NewUserModal";
 
 interface DashboardProps {
   // Define your component props here
@@ -15,6 +16,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
   useEffect(() => {
     dispatch(getUsers());
   }, []);
+  const [showCreateModal, setShowCreateModal] = useState(false);
   const columns = [
     {
       title: "Name",
@@ -45,6 +47,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
         <button
           className="text-white bg-[#319795]
           px-6 rounded-md text-lg font-semibold h-7"
+          onClick={() => setShowCreateModal(true)}
         >
           Create
         </button>
@@ -81,6 +84,10 @@ const Dashboard: React.FC<DashboardProps> = () => {
           };
         })}
       ></Table>
+      <NewUserModal
+        isModalOpen={showCreateModal}
+        handleCancel={() => setShowCreateModal(false)}
+       ></NewUserModal>
     </div>
   );
 };
